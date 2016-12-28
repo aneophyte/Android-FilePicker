@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Num of files selected: "+ filePaths.size(), Toast.LENGTH_SHORT).show();
     }
 
-    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onPickPhoto() {
         int maxCount = MAX_ATTACHMENT_COUNT-docPaths.size() - audioPaths.size();
         if((getTotalItemsSize())==MAX_ATTACHMENT_COUNT)
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                     .pickPhoto(this);
     }
 
-    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onPickDoc() {
         int maxCount = MAX_ATTACHMENT_COUNT-photoPaths.size() - audioPaths.size();
         if((getTotalItemsSize())==MAX_ATTACHMENT_COUNT)
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     .pickDocument(this);
     }
 
-    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onPickAudio() {
         int maxCount = MAX_ATTACHMENT_COUNT-photoPaths.size() - docPaths.size();
         if(getTotalItemsSize() ==MAX_ATTACHMENT_COUNT)
