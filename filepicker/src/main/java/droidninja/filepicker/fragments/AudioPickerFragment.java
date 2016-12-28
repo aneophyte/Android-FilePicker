@@ -76,14 +76,14 @@ public class AudioPickerFragment extends BaseFragment {
             recyclerView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
 
-            AudioListAdapter fileListAdapter = (AudioListAdapter) recyclerView.getAdapter();
-            if (fileListAdapter == null) {
-                fileListAdapter = new AudioListAdapter(getActivity(), dirs, selectedPaths);
+            AudioListAdapter audioListAdapter = (AudioListAdapter) recyclerView.getAdapter();
+            if (audioListAdapter == null) {
+                audioListAdapter = new AudioListAdapter(getActivity(), dirs, selectedPaths);
 
-                recyclerView.setAdapter(fileListAdapter);
+                recyclerView.setAdapter(audioListAdapter);
             } else {
-                fileListAdapter.setData(dirs);
-                fileListAdapter.notifyDataSetChanged();
+                audioListAdapter.setData(dirs);
+                audioListAdapter.notifyDataSetChanged();
             }
         } else {
             recyclerView.setVisibility(View.GONE);
