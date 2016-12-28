@@ -13,6 +13,10 @@ public class Audio extends BaseFile implements Parcelable {
         this.size = size;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public long getDuration() {
         return duration;
     }
