@@ -1,8 +1,6 @@
 package droidninja.filepicker.fragments;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,9 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +21,6 @@ import droidninja.filepicker.adapters.PhotoGridAdapter;
 import droidninja.filepicker.cursors.loadercallbacks.FileResultCallback;
 import droidninja.filepicker.models.Photo;
 import droidninja.filepicker.models.PhotoDirectory;
-import droidninja.filepicker.utils.ImageCaptureManager;
 import droidninja.filepicker.utils.MediaStoreHelper;
 
 
@@ -39,7 +34,6 @@ public class PhotoPickerFragment extends BaseFragment{
     private PhotoPickerFragmentListener mListener;
     private PhotoGridAdapter photoGridAdapter;
     private ArrayList<String> selectedPaths;
-    private ImageCaptureManager imageCaptureManager;
 
     public PhotoPickerFragment() {
         // Required empty public constructor
@@ -92,7 +86,6 @@ public class PhotoPickerFragment extends BaseFragment{
     }
 
     private void initView() {
-        imageCaptureManager = new ImageCaptureManager(getActivity());
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS);
         recyclerView.setLayoutManager(layoutManager);
@@ -136,36 +129,7 @@ public class PhotoPickerFragment extends BaseFragment{
             {
                 photoGridAdapter = new PhotoGridAdapter(getActivity(), photos,selectedPaths);
                 recyclerView.setAdapter(photoGridAdapter);
-                photoGridAdapter.setCameraListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            Intent intent = imageCaptureManager.dispatchTakePictureIntent();
-                            if(intent!=null)
-                                startActivityForResult(intent, ImageCaptureManager.REQUEST_TAKE_PHOTO);
-                            else
-                                Toast.makeText(getActivity(), R.string.no_camera_exists, Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
             }
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode)
-        {
-            case ImageCaptureManager.REQUEST_TAKE_PHOTO:
-                if(resultCode== Activity.RESULT_OK)
-                {
-                    imageCaptureManager.galleryAddPic(getActivity());
-                    getDataFromMedia();
-                }
-                break;
-        }
     }
 }

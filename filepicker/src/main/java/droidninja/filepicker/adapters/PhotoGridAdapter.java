@@ -8,10 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -25,10 +24,6 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
   private final Context context;
   private int imageSize;
-
-  public final static int ITEM_TYPE_CAMERA = 100;
-  public final static int ITEM_TYPE_PHOTO  = 101;
-  private View.OnClickListener cameraOnClickListener;
 
   public PhotoGridAdapter(Context context, ArrayList<Photo> photos, ArrayList<String> selectedPaths)
   {
@@ -45,73 +40,59 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
   }
 
   @Override
-  public int getItemViewType(int position) {
-    return (position == 0) ? ITEM_TYPE_CAMERA : ITEM_TYPE_PHOTO;
-  }
-
-  @Override
   public void onBindViewHolder(final PhotoViewHolder holder, int position) {
-    if(getItemViewType(position) == ITEM_TYPE_PHOTO) {
+    final Photo photo = getItems().get(position);
 
-      final Photo photo = getItems().get(position-1);
+    FrescoFactory.getLoader().showImage(holder.imageView, Uri.fromFile(new File(photo.getPath())), null);
 
-      FrescoFactory.getLoader().showImage(holder.imageView, Uri.fromFile(new File(photo.getPath())), null);
-
-      holder.itemView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          if(PickerManager.getInstance().getMaxCount()==1)
-            PickerManager.getInstance().add(photo);
-          else
-            if (holder.checkBox.isChecked() || PickerManager.getInstance().shouldAdd()) {
-            holder.checkBox.setChecked(!holder.checkBox.isChecked(), true);
-          }
+    holder.itemView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if(PickerManager.getInstance().getMaxCount()==1)
+          PickerManager.getInstance().add(photo);
+        else
+          if (holder.checkBox.isChecked() || PickerManager.getInstance().shouldAdd()) {
+          holder.checkBox.setChecked(!holder.checkBox.isChecked(), true);
         }
-      });
+      }
+    });
 
-      //in some cases, it will prevent unwanted situations
-      holder.checkBox.setVisibility(View.GONE);
-      holder.checkBox.setOnCheckedChangeListener(null);
-      holder.checkBox.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-          if(holder.checkBox.isChecked() || PickerManager.getInstance().shouldAdd()) {
-            holder.checkBox.setChecked(!holder.checkBox.isChecked(), true);
-          }
+    //in some cases, it will prevent unwanted situations
+    holder.checkBox.setVisibility(View.GONE);
+    holder.checkBox.setOnCheckedChangeListener(null);
+    holder.checkBox.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        if(holder.checkBox.isChecked() || PickerManager.getInstance().shouldAdd()) {
+          holder.checkBox.setChecked(!holder.checkBox.isChecked(), true);
         }
-      });
+      }
+    });
 
-      //if true, your checkbox will be selected, else unselected
-      holder.checkBox.setChecked(isSelected(photo));
+    //if true, your checkbox will be selected, else unselected
+    holder.checkBox.setChecked(isSelected(photo));
 
-      holder.selectBg.setVisibility(isSelected(photo) ? View.VISIBLE : View.GONE);
-      holder.checkBox.setVisibility(isSelected(photo) ? View.VISIBLE : View.GONE);
+    holder.selectBg.setVisibility(isSelected(photo) ? View.VISIBLE : View.GONE);
+    holder.checkBox.setVisibility(isSelected(photo) ? View.VISIBLE : View.GONE);
 
-      holder.checkBox.setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-          toggleSelection(photo);
-          holder.selectBg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+    holder.checkBox.setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
+        toggleSelection(photo);
+        holder.selectBg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
 
-          if (isChecked)
-          {
-            holder.checkBox.setVisibility(View.VISIBLE);
-            PickerManager.getInstance().add(photo);
-          }
-          else
-          {
-            holder.checkBox.setVisibility(View.GONE);
-            PickerManager.getInstance().remove(photo);
-          }
+        if (isChecked)
+        {
+          holder.checkBox.setVisibility(View.VISIBLE);
+          PickerManager.getInstance().add(photo);
         }
-      });
-    }
-    else
-    {
-      FrescoFactory.getLoader().showImage(holder.imageView,R.drawable.ic_camera,null);
-      holder.checkBox.setVisibility(View.GONE);
-      holder.itemView.setOnClickListener(cameraOnClickListener);
-    }
+        else
+        {
+          holder.checkBox.setVisibility(View.GONE);
+          PickerManager.getInstance().remove(photo);
+        }
+      }
+    });
   }
 
   private void setColumnNumber(Context context, int columnNum) {
@@ -125,11 +106,6 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
   @Override
   public int getItemCount() {
     return getItems().size()+1;
-  }
-
-  public void setCameraListener(View.OnClickListener onClickListener)
-  {
-    this.cameraOnClickListener = onClickListener;
   }
 
   public static class PhotoViewHolder extends RecyclerView.ViewHolder {
