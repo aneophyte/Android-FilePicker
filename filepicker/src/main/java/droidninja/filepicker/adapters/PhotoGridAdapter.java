@@ -19,6 +19,7 @@ import droidninja.filepicker.PickerManager;
 import droidninja.filepicker.R;
 import droidninja.filepicker.models.Photo;
 import droidninja.filepicker.utils.image.FrescoFactory;
+import droidninja.filepicker.utils.image.FrescoLoader;
 import droidninja.filepicker.views.SmoothCheckBox;
 
 public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoViewHolder, Photo>{
@@ -29,12 +30,14 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
   public final static int ITEM_TYPE_CAMERA = 100;
   public final static int ITEM_TYPE_PHOTO  = 101;
   private View.OnClickListener cameraOnClickListener;
+  public FrescoLoader.FrescoOption frescoOption;
 
   public PhotoGridAdapter(Context context, ArrayList<Photo> photos, ArrayList<String> selectedPaths)
   {
     super(photos, selectedPaths);
     this.context = context;
     setColumnNumber(context,3);
+    frescoOption = FrescoFactory.newOption(imageSize, imageSize);
   }
 
   @Override
@@ -55,7 +58,7 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
       final Photo photo = getItems().get(position-1);
 
-      FrescoFactory.getLoader().showImage(holder.imageView, Uri.fromFile(new File(photo.getPath())), null);
+      FrescoFactory.getLoader().showImage(holder.imageView, Uri.fromFile(new File(photo.getPath())), frescoOption);
 
       holder.itemView.setOnClickListener(new View.OnClickListener() {
         @Override
