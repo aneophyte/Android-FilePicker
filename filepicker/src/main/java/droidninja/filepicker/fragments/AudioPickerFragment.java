@@ -1,6 +1,5 @@
 package droidninja.filepicker.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,25 +13,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import droidninja.filepicker.R;
-import droidninja.filepicker.adapters.FileListAdapter;
-import droidninja.filepicker.models.Document;
+import droidninja.filepicker.adapters.AudioListAdapter;
+import droidninja.filepicker.cursors.loadercallbacks.AudioFilesLoaderCallbacks;
+import droidninja.filepicker.cursors.loadercallbacks.FileResultCallback;
+import droidninja.filepicker.models.Audio;
 
 
-public class DocFragment extends BaseFragment {
-
-    private static final String TAG = DocFragment.class.getSimpleName();
+public class AudioPickerFragment extends BaseFragment {
+    public static final String SELECTED_PATHS = "SelectedPaths";
     RecyclerView recyclerView;
-
     TextView emptyView;
-
-    private PhotoPickerFragmentListener mListener;
-    private FileListAdapter fileListAdapter;
     private ArrayList<String> selectedPaths;
 
-    public DocFragment() {
+    public AudioPickerFragment() {
         // Required empty public constructor
     }
 
+    public static AudioPickerFragment newInstance(ArrayList<String> selectedPaths) {
+        AudioPickerFragment audioPickerFragment = new AudioPickerFragment();
+        Bundle arguments = new Bundle();
+        arguments.putStringArrayList(SELECTED_PATHS, selectedPaths);
+        audioPickerFragment.setArguments(arguments);
+        return audioPickerFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,40 +44,18 @@ public class DocFragment extends BaseFragment {
         return inflater.inflate(R.layout.fragment_files, container, false);
     }
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof PhotoPickerFragmentListener) {
-            mListener = (PhotoPickerFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement PhotoPickerFragmentListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public static DocFragment newInstance(ArrayList<String> selectedPaths) {
-        DocFragment photoPickerFragment = new DocFragment();
-        photoPickerFragment.selectedPaths = selectedPaths;
-        return  photoPickerFragment;
-    }
-
-    public interface PhotoPickerFragmentListener {
-        // TODO: Update argument type and name
-
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.selectedPaths = getArguments().getStringArrayList(SELECTED_PATHS);
         setView(view);
         initView();
+        getActivity().getSupportLoaderManager().initLoader(0, null, new AudioFilesLoaderCallbacks(getContext(), new FileResultCallback<Audio>() {
+            @Override
+            public void onResultCallback(List<Audio> files) {
+                updateList(files);
+            }
+        }));
     }
 
     private void setView(View view) {
@@ -87,32 +68,26 @@ public class DocFragment extends BaseFragment {
         recyclerView.setVisibility(View.GONE);
     }
 
-    public void updateList(List<Document> dirs) {
-        if(getView()==null)
+    public void updateList(List<Audio> dirs) {
+        if (getView() == null)
             return;
 
-        if(dirs.size()>0)
-        {
+        if (dirs.size() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
             emptyView.setVisibility(View.GONE);
 
-            FileListAdapter fileListAdapter = (FileListAdapter) recyclerView.getAdapter();
-            if(fileListAdapter==null) {
-                fileListAdapter = new FileListAdapter(getActivity(), dirs, selectedPaths);
+            AudioListAdapter fileListAdapter = (AudioListAdapter) recyclerView.getAdapter();
+            if (fileListAdapter == null) {
+                fileListAdapter = new AudioListAdapter(getActivity(), dirs, selectedPaths);
 
                 recyclerView.setAdapter(fileListAdapter);
-            }
-            else
-            {
+            } else {
                 fileListAdapter.setData(dirs);
                 fileListAdapter.notifyDataSetChanged();
             }
-        }
-        else
-        {
+        } else {
             recyclerView.setVisibility(View.GONE);
             emptyView.setVisibility(View.VISIBLE);
         }
     }
-
 }

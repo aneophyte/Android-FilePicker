@@ -17,6 +17,7 @@
     <string name="attachments_title_text" formatted="false">Attachments (%d/%d)</string>
     <string name="select_photo_text">Select a photo</string>
     <string name="select_doc_text">Select a document</string>
+    <string name="select_audio_text">Select an audio file</string>
     <string name="no_camera_exists">No Application exists for camera!</string>
     <string name="pdf_title">PDF</string>
     <string name="ppt_title">PPT</string>

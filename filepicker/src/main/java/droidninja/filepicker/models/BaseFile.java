@@ -1,11 +1,14 @@
 package droidninja.filepicker.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import droidninja.filepicker.utils.Utils;
 
 /**
  * Created by droidNinja on 29/07/16.
  */
-public class BaseFile {
+public class BaseFile implements Parcelable {
     protected int id;
     protected String name;
     protected String path;
@@ -47,4 +50,35 @@ public class BaseFile {
     public void setId(int id) {
         this.id = id;
     }
+
+    protected BaseFile(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        path = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(path);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<BaseFile> CREATOR = new Parcelable.Creator<BaseFile>() {
+        @Override
+        public BaseFile createFromParcel(Parcel in) {
+            return new BaseFile(in);
+        }
+
+        @Override
+        public BaseFile[] newArray(int size) {
+            return new BaseFile[size];
+        }
+    };
 }

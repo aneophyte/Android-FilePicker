@@ -2,13 +2,10 @@ package vi.filepicker;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +14,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;
+import droidninja.filepicker.models.Audio;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -29,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int MAX_ATTACHMENT_COUNT = 10;
     private ArrayList<String> photoPaths = new ArrayList<>();
     private ArrayList<String> docPaths = new ArrayList<>();
+    private List<String> audioPaths = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void pickDocClicked(View view) {
         MainActivityPermissionsDispatcher.onPickDocWithCheck(this);
+    }
+
+    public void pickAudioClicked(View view) {
+        MainActivityPermissionsDispatcher.onPickAudioWithCheck(this);
     }
 
     @Override
@@ -65,18 +69,30 @@ public class MainActivity extends AppCompatActivity {
                     docPaths.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS));
                 }
                 break;
+
+            case FilePickerConst.REQUEST_CODE_AUDIO:
+                if(resultCode== Activity.RESULT_OK && data!=null)
+                {
+                    audioPaths.clear();
+                    List<Audio> audioList = data.getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_AUDIO);
+                    for (Audio audio : audioList) {
+                        audioPaths.add(audio.getPath());
+                    }
+                }
         }
 
-        addThemToView(photoPaths,docPaths);
+        addThemToView(photoPaths,docPaths, audioPaths);
     }
 
-    private void addThemToView(ArrayList<String> imagePaths, ArrayList<String> docPaths) {
+    private void addThemToView(ArrayList<String> imagePaths, ArrayList<String> docPaths, List<String> audioPaths) {
         ArrayList<String> filePaths = new ArrayList<>();
         if(imagePaths!=null)
             filePaths.addAll(imagePaths);
 
         if(docPaths!=null)
             filePaths.addAll(docPaths);
+
+        filePaths.addAll(audioPaths);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         if(recyclerView!=null) {
@@ -95,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onPickPhoto() {
-        int maxCount = MAX_ATTACHMENT_COUNT-docPaths.size();
-        if((docPaths.size()+photoPaths.size())==MAX_ATTACHMENT_COUNT)
+        int maxCount = MAX_ATTACHMENT_COUNT-docPaths.size() - audioPaths.size();
+        if((getTotalItemsSize())==MAX_ATTACHMENT_COUNT)
             Toast.makeText(this, "Cannot select more than " + MAX_ATTACHMENT_COUNT + " items", Toast.LENGTH_SHORT).show();
         else
             FilePickerBuilder.getInstance().setMaxCount(maxCount)
@@ -107,14 +123,30 @@ public class MainActivity extends AppCompatActivity {
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onPickDoc() {
-        int maxCount = MAX_ATTACHMENT_COUNT-photoPaths.size();
-        if((docPaths.size()+photoPaths.size())==MAX_ATTACHMENT_COUNT)
+        int maxCount = MAX_ATTACHMENT_COUNT-photoPaths.size() - audioPaths.size();
+        if((getTotalItemsSize())==MAX_ATTACHMENT_COUNT)
             Toast.makeText(this, "Cannot select more than " + MAX_ATTACHMENT_COUNT + " items", Toast.LENGTH_SHORT).show();
         else
             FilePickerBuilder.getInstance().setMaxCount(maxCount)
                     .setSelectedFiles(docPaths)
                     .setActivityTheme(R.style.FilePickerTheme)
                     .pickDocument(this);
+    }
+
+    @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void onPickAudio() {
+        int maxCount = MAX_ATTACHMENT_COUNT-photoPaths.size() - docPaths.size();
+        if(getTotalItemsSize() ==MAX_ATTACHMENT_COUNT)
+            Toast.makeText(this, "Cannot select more than " + MAX_ATTACHMENT_COUNT + " items", Toast.LENGTH_SHORT).show();
+        else
+        FilePickerBuilder.getInstance().setMaxCount(maxCount)
+                .setSelectedFiles(docPaths)
+                .setActivityTheme(R.style.FilePickerTheme)
+                .pickAudio(this);
+    }
+
+    private int getTotalItemsSize() {
+        return docPaths.size()+photoPaths.size() + audioPaths.size();
     }
 
     @Override

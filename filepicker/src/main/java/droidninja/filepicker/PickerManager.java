@@ -2,6 +2,7 @@ package droidninja.filepicker;
 
 import java.util.ArrayList;
 
+import droidninja.filepicker.models.Audio;
 import droidninja.filepicker.models.BaseFile;
 
 /**
@@ -20,12 +21,14 @@ public class PickerManager {
 
     private ArrayList<BaseFile> imageFiles;
     private ArrayList<BaseFile> docFiles;
+    private ArrayList<Audio> audioFiles;
 
     private int theme = R.style.AppTheme;
 
     private PickerManager() {
         imageFiles = new ArrayList<>();
         docFiles = new ArrayList<>();
+        audioFiles = new ArrayList<>();
     }
 
     public void setMaxCount(int count)
@@ -54,6 +57,7 @@ public class PickerManager {
         {
             if(file.isImage() && !imageFiles.contains(file))
                 imageFiles.add(file);
+            else if (file instanceof Audio && !audioFiles.contains(file)) audioFiles.add((Audio) file);
             else
                 docFiles.add(file);
             currentCount++;
@@ -75,6 +79,9 @@ public class PickerManager {
             imageFiles.remove(file);
             currentCount--;
 
+        } else if (audioFiles.contains(file)) {
+            audioFiles.remove(file);
+            currentCount--;
         }
         else if(docFiles.contains(file)){
             docFiles.remove(file);
@@ -102,6 +109,10 @@ public class PickerManager {
         return getSelectedFilePaths(docFiles);
     }
 
+    public ArrayList<Audio> getSelectedAudioFiles() {
+        return audioFiles;
+    }
+
     public ArrayList<String> getSelectedFilePaths(ArrayList<BaseFile> files)
     {
         ArrayList<String> paths = new ArrayList<>();
@@ -115,6 +126,7 @@ public class PickerManager {
     {
         docFiles.clear();
         imageFiles.clear();
+        audioFiles.clear();
         currentCount = 0;
         maxCount=0;
     }

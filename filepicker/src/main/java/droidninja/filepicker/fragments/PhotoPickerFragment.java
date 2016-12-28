@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import droidninja.filepicker.FilePickerConst;
-import droidninja.filepicker.PickerManager;
 import droidninja.filepicker.R;
 import droidninja.filepicker.adapters.PhotoGridAdapter;
 import droidninja.filepicker.cursors.loadercallbacks.FileResultCallback;
@@ -51,7 +50,7 @@ public class PhotoPickerFragment extends BaseFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_photo_picker, container, false);
+        return inflater.inflate(R.layout.fragment_files, container, false);
     }
 
     @Override

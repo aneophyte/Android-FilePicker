@@ -6,16 +6,18 @@ package droidninja.filepicker;
 public class FilePickerConst {
     public static final int REQUEST_CODE_PHOTO = 233;
     public static final int REQUEST_CODE_DOC = 234;
-
+    public static final int REQUEST_CODE_AUDIO = 235;
 
     public final static int DEFAULT_MAX_COUNT        = 9;
     public final static int DEFAULT_COLUMN_NUMBER    = 3;
 
     public final static int PHOTO_PICKER    = 0x11;
     public final static int DOC_PICKER    = 0x12;
+    public final static int AUDIO_PICKER = 0x13;
 
     public final static String KEY_SELECTED_PHOTOS   = "SELECTED_PHOTOS";
     public final static String KEY_SELECTED_DOCS  = "SELECTED_DOCS";
+    public static final String KEY_SELECTED_AUDIO = "SELECTED_AUDIO";
 
     public final static String EXTRA_PICKER_TYPE     = "EXTRA_PICKER_TYPE";
     public final static String EXTRA_SHOW_GIF        = "SHOW_GIF";

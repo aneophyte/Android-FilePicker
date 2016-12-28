@@ -66,6 +66,18 @@ public class FilePickerBuilder {
         start(context,FilePickerConst.DOC_PICKER);
     }
 
+    public void pickAudio(Activity context) {
+        int pickerType = FilePickerConst.AUDIO_PICKER;
+        mPickerOptionsBundle.putInt(FilePickerConst.EXTRA_PICKER_TYPE, pickerType);
+        start(context, pickerType);
+    }
+
+    public void pickAudio(Fragment context) {
+        int pickerType = FilePickerConst.AUDIO_PICKER;
+        mPickerOptionsBundle.putInt(FilePickerConst.EXTRA_PICKER_TYPE, pickerType);
+        start(context, pickerType);
+    }
+
     private void start(Activity context, int pickerType)
     {
         Intent intent = new Intent(context, FilePickerActivity.class);
@@ -73,6 +85,8 @@ public class FilePickerBuilder {
 
         if(pickerType==FilePickerConst.PHOTO_PICKER)
             context.startActivityForResult(intent,FilePickerConst.REQUEST_CODE_PHOTO);
+        else if (pickerType == FilePickerConst.AUDIO_PICKER)
+            context.startActivityForResult(intent, FilePickerConst.REQUEST_CODE_AUDIO);
         else
             context.startActivityForResult(intent,FilePickerConst.REQUEST_CODE_DOC);
     }
