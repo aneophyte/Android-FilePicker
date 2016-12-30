@@ -6,7 +6,9 @@ import android.support.v4.content.CursorLoader;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class AudioFilesLoader extends CursorLoader {
     public static final String[] PROJECTION = new String[]{
@@ -18,6 +20,7 @@ public class AudioFilesLoader extends CursorLoader {
     };
 
     public static final String[] AUDIO_TYPES = new String[]{
+            MimeTypeMap.getSingleton().getMimeTypeFromExtension("ac3"),
             MimeTypeMap.getSingleton().getMimeTypeFromExtension("mp3"),
             MimeTypeMap.getSingleton().getMimeTypeFromExtension("aac"),
             MimeTypeMap.getSingleton().getMimeTypeFromExtension("ogg"),
@@ -29,10 +32,16 @@ public class AudioFilesLoader extends CursorLoader {
         super(context);
         setUri(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         setProjection(PROJECTION);
-        String[] placeholders = new String[AUDIO_TYPES.length];
+        List<String> supportedAudioTypes = new ArrayList<>();
+        for (String audioType : AUDIO_TYPES) {
+            if (audioType != null) {
+                supportedAudioTypes.add(audioType);
+            }
+        }
+        String[] placeholders = new String[supportedAudioTypes.size()];
         Arrays.fill(placeholders, "?");
         setSelection(MediaStore.Audio.Media.MIME_TYPE + " IN " + TextUtils.concat("(", TextUtils.join(", ", placeholders), ")"));
-        setSelectionArgs(AUDIO_TYPES);
+        setSelectionArgs(supportedAudioTypes.toArray(new String[]{}));
         setSortOrder(MediaStore.Audio.Media.DATE_MODIFIED + " DESC");
     }
 }
