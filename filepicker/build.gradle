@@ -13,6 +13,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName version
+        consumerProguardFiles 'proguard-filepicker-rules.pro'
     }
     buildTypes {
         release {
