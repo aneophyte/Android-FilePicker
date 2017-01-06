@@ -1,22 +1,21 @@
 package vi.filepicker;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import droidninja.filepicker.utils.image.FrescoFactory;
 
 /**
  * Created by droidNinja on 29/07/16.
@@ -50,7 +49,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.FileViewHold
     @Override
     public void onBindViewHolder(FileViewHolder holder, int position) {
         String path = paths.get(position);
-        FrescoFactory.getLoader().showImage(holder.imageView, Uri.fromFile(new File(path)), FrescoFactory.newOption(imageSize,imageSize));
+        Glide.with(holder.imageView.getContext()).load(new File(path)).into(holder.imageView);
     }
 
     @Override
@@ -61,7 +60,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.FileViewHold
     public static class FileViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.iv_photo)
-        SimpleDraweeView imageView;
+        ImageView imageView;
 
         public FileViewHolder(View itemView) {
             super(itemView);

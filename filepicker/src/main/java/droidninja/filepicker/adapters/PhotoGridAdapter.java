@@ -1,7 +1,6 @@
 package droidninja.filepicker.adapters;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -9,16 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 import java.util.ArrayList;
 
 import droidninja.filepicker.PickerManager;
 import droidninja.filepicker.R;
 import droidninja.filepicker.models.Photo;
-import droidninja.filepicker.utils.image.FrescoFactory;
 import droidninja.filepicker.views.SmoothCheckBox;
 
 public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoViewHolder, Photo>{
@@ -55,7 +53,7 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
       final Photo photo = getItems().get(position-1);
 
-      FrescoFactory.getLoader().showImage(holder.imageView, Uri.fromFile(new File(photo.getPath())), null);
+      Glide.with(holder.imageView.getContext()).load(new File(photo.getPath())).into(holder.imageView);
 
       holder.itemView.setOnClickListener(new View.OnClickListener() {
         @Override
@@ -108,7 +106,7 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
     }
     else
     {
-      FrescoFactory.getLoader().showImage(holder.imageView,R.drawable.ic_camera,null);
+      holder.imageView.setImageResource(R.drawable.ic_camera);
       holder.checkBox.setVisibility(View.GONE);
       holder.itemView.setOnClickListener(cameraOnClickListener);
     }
@@ -136,14 +134,14 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
       SmoothCheckBox checkBox;
 
-      SimpleDraweeView imageView;
+      ImageView imageView;
 
       View selectBg;
 
     public PhotoViewHolder(View itemView) {
       super(itemView);
       checkBox = (SmoothCheckBox) itemView.findViewById(R.id.checkbox);
-      imageView = (SimpleDraweeView) itemView.findViewById(R.id.iv_photo);
+      imageView = (ImageView) itemView.findViewById(R.id.iv_photo);
       selectBg = itemView.findViewById(R.id.transparent_bg);
     }
   }

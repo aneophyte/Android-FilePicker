@@ -9,12 +9,11 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import droidninja.filepicker.fragments.AudioPickerFragment;
 import droidninja.filepicker.fragments.DocFragment;
 import droidninja.filepicker.fragments.DocPickerFragment;
 import droidninja.filepicker.fragments.PhotoPickerFragment;
-import droidninja.filepicker.models.Photo;
 import droidninja.filepicker.utils.FragmentUtil;
-import droidninja.filepicker.utils.image.FrescoManager;
 
 public class FilePickerActivity extends AppCompatActivity implements PhotoPickerFragment.PhotoPickerFragmentListener, DocFragment.PhotoPickerFragmentListener,
         PickerManagerListener{
@@ -29,7 +28,6 @@ public class FilePickerActivity extends AppCompatActivity implements PhotoPicker
         setContentView(R.layout.activity_file_picker);
 
         if (savedInstanceState == null) {
-            FrescoManager.init(this);
             initView();
         }
     }
@@ -67,6 +65,9 @@ public class FilePickerActivity extends AppCompatActivity implements PhotoPicker
         {
             PhotoPickerFragment photoFragment = PhotoPickerFragment.newInstance(selectedPaths);
             FragmentUtil.addFragment(this, R.id.container, photoFragment);
+        } else if (type == FilePickerConst.AUDIO_PICKER) {
+            AudioPickerFragment audioFragment = AudioPickerFragment.newInstance(selectedPaths);
+            FragmentUtil.addFragment(this, R.id.container, audioFragment);
         }
         else {
             DocPickerFragment photoFragment = DocPickerFragment.newInstance(selectedPaths);
@@ -84,6 +85,8 @@ public class FilePickerActivity extends AppCompatActivity implements PhotoPicker
             {
                 if(type==FilePickerConst.PHOTO_PICKER)
                     actionBar.setTitle(R.string.select_photo_text);
+                else if (type == FilePickerConst.AUDIO_PICKER)
+                    actionBar.setTitle(R.string.select_audio_text);
                 else
                     actionBar.setTitle(R.string.select_doc_text);
             }
@@ -104,7 +107,9 @@ public class FilePickerActivity extends AppCompatActivity implements PhotoPicker
 
             if(type==FilePickerConst.PHOTO_PICKER)
                 intent.putStringArrayListExtra(FilePickerConst.KEY_SELECTED_PHOTOS, PickerManager.getInstance().getSelectedPhotos());
-            else
+            else if (type == FilePickerConst.AUDIO_PICKER)
+                intent.putParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_AUDIO, PickerManager.getInstance().getSelectedAudioFiles());
+            else if (type == FilePickerConst.DOC_PICKER)
                 intent.putStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS, PickerManager.getInstance().getSelectedFiles());
             setResult(RESULT_OK, intent);
             finish();
@@ -129,7 +134,7 @@ public class FilePickerActivity extends AppCompatActivity implements PhotoPicker
         Intent intent = new Intent();
         if(type==FilePickerConst.PHOTO_PICKER)
             intent.putStringArrayListExtra(FilePickerConst.KEY_SELECTED_PHOTOS, paths);
-        else
+        else if (type == FilePickerConst.DOC_PICKER)
             intent.putStringArrayListExtra(FilePickerConst.KEY_SELECTED_DOCS, paths);
         setResult(RESULT_OK, intent);
         finish();
