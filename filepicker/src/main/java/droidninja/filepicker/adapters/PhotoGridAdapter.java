@@ -1,15 +1,15 @@
 package droidninja.filepicker.adapters;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import droidninja.filepicker.PickerManager;
 import droidninja.filepicker.R;
 import droidninja.filepicker.models.Photo;
-import droidninja.filepicker.utils.image.FrescoFactory;
-import droidninja.filepicker.utils.image.FrescoLoader;
 import droidninja.filepicker.views.SmoothCheckBox;
 
 public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoViewHolder, Photo>{
@@ -26,14 +24,11 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
   private final Context context;
   private int imageSize;
 
-  public FrescoLoader.FrescoOption frescoOption;
-
   public PhotoGridAdapter(Context context, ArrayList<Photo> photos, ArrayList<String> selectedPaths)
   {
     super(photos, selectedPaths);
     this.context = context;
     setColumnNumber(context,3);
-    frescoOption = FrescoFactory.newOption(imageSize, imageSize);
   }
 
   @Override
@@ -47,7 +42,7 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
   public void onBindViewHolder(final PhotoViewHolder holder, int position) {
     final Photo photo = getItems().get(position);
 
-      FrescoFactory.getLoader().showImage(holder.imageView, Uri.fromFile(new File(photo.getPath())), frescoOption);
+    Glide.with(holder.imageView.getContext()).load(new File(photo.getPath())).into(holder.imageView);
 
     holder.itemView.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -85,19 +80,19 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
         toggleSelection(photo);
         holder.selectBg.setVisibility(isChecked ? View.VISIBLE : View.GONE);
 
-        if (isChecked)
-        {
-          holder.checkBox.setVisibility(View.VISIBLE);
-          PickerManager.getInstance().add(photo);
+          if (isChecked)
+          {
+            holder.checkBox.setVisibility(View.VISIBLE);
+            PickerManager.getInstance().add(photo);
+          }
+          else
+          {
+            holder.checkBox.setVisibility(View.GONE);
+            PickerManager.getInstance().remove(photo);
+          }
         }
-        else
-        {
-          holder.checkBox.setVisibility(View.GONE);
-          PickerManager.getInstance().remove(photo);
-        }
-      }
-    });
-  }
+      });
+    }
 
   private void setColumnNumber(Context context, int columnNum) {
     WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -116,14 +111,14 @@ public class PhotoGridAdapter extends SelectableAdapter<PhotoGridAdapter.PhotoVi
 
       SmoothCheckBox checkBox;
 
-      SimpleDraweeView imageView;
+      ImageView imageView;
 
       View selectBg;
 
     public PhotoViewHolder(View itemView) {
       super(itemView);
       checkBox = (SmoothCheckBox) itemView.findViewById(R.id.checkbox);
-      imageView = (SimpleDraweeView) itemView.findViewById(R.id.iv_photo);
+      imageView = (ImageView) itemView.findViewById(R.id.iv_photo);
       selectBg = itemView.findViewById(R.id.transparent_bg);
     }
   }

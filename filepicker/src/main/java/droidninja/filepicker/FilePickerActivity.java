@@ -13,9 +13,7 @@ import droidninja.filepicker.fragments.AudioPickerFragment;
 import droidninja.filepicker.fragments.DocFragment;
 import droidninja.filepicker.fragments.DocPickerFragment;
 import droidninja.filepicker.fragments.PhotoPickerFragment;
-import droidninja.filepicker.models.Photo;
 import droidninja.filepicker.utils.FragmentUtil;
-import droidninja.filepicker.utils.image.FrescoManager;
 
 public class FilePickerActivity extends AppCompatActivity implements PhotoPickerFragment.PhotoPickerFragmentListener, DocFragment.PhotoPickerFragmentListener,
         PickerManagerListener{
@@ -30,7 +28,6 @@ public class FilePickerActivity extends AppCompatActivity implements PhotoPicker
         setContentView(R.layout.activity_file_picker);
 
         if (savedInstanceState == null) {
-            FrescoManager.init(this);
             initView();
         }
     }
