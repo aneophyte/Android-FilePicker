@@ -33,7 +33,6 @@ public class AudioListAdapter extends SelectableAdapter<AudioListAdapter.AudioVi
     @Override
     public AudioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.item_doc_layout, parent, false);
-
         return new AudioViewHolder(itemView);
     }
 
@@ -115,6 +114,7 @@ public class AudioListAdapter extends SelectableAdapter<AudioListAdapter.AudioVi
             super(itemView);
             checkBox = (SmoothCheckBox) itemView.findViewById(R.id.checkbox);
             imageView = (ImageView) itemView.findViewById(R.id.file_iv);
+            imageView.setImageResource(R.drawable.ic_audio_file);
             fileNameTextView = (TextView) itemView.findViewById(R.id.file_name_tv);
             fileSizeTextView = (TextView) itemView.findViewById(R.id.file_size_tv);
         }
